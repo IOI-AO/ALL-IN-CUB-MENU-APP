@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>All In Cup - Menu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #000000; color: #ffffff; margin: 0; padding: 0; padding-bottom: 180px; }
+        .main-header { background: linear-gradient(180deg, #ff8c00 0%, #000000 100%); padding: 40px 20px; text-align: center; }
+        .logo-white { width: 90px; height: 90px; background: #fff; border-radius: 50%; margin: 0 auto; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #000; border: 4px solid #000; }
+        .menu-section { background: #111; margin: 15px; padding: 15px; border-radius: 15px; border-right: 5px solid #ff8c00; }
+        .section-name { color: #ff8c00; font-size: 1.5rem; font-weight: 900; margin-bottom: 10px; }
+        .food-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #222; }
+        .qty-btn { background: #333; color: white; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; }
+        #cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a1a; border-top: 3px solid #ff8c00; padding: 15px; z-index: 999; display: none; }
+        .final-footer { background: #ff8c00; color: #000; padding: 30px 20px; text-align: center; border-radius: 30px 30px 0 0; margin-top: 40px; }
+    </style>
+</head>
+<body>
+
+    <div class="main-header">
+        <div class="logo-white">
+            <span class="text-sm font-bold">All</span>
+            <span class="text-3xl font-black">CUP</span>
+        </div>
+        <h1 class="text-2xl font-black mt-2 text-white italic uppercase">MENU</h1>
+        <p class="text-sm font-bold text-black bg-white/70 inline-block px-3 py-1 rounded-full mt-2">واحة بدر - داخل جامعة بدر 📍</p>
+    </div>
+
+    <div id="menu-content" class="max-w-2xl mx-auto"></div>
+
+    <div id="cart-bar">
+        <div class="flex justify-between items-center mb-3">
+            <span class="font-bold text-gray-400">إجمالي الحساب:</span>
+            <span id="total-price" class="text-xl font-black text-[#ff8c00]">0 جنيه</span>
+        </div>
+        <input id="user-address" type="text" placeholder="🏠 العنوان (مبنى/دور/شقة)" class="w-full p-3 mb-2 bg-black border border-gray-700 rounded-lg text-white">
+        <div class="text-[#ff8c00] font-bold text-center mb-2">💵 الدفع كاش عند الاستلام</div>
+        <button onclick="sendOrder()" class="w-full bg-[#ff8c00] text-black font-black py-4 rounded-xl text-lg shadow-lg">إرسال للواتساب 💬</button>
+    </div>
+
+    <div class="final-footer">
+        <p class="font-black">للطلب: 01555936555 - 01210009806</p>
+    </div>
+
+    <script>
+        const menuData = [
+            { cat: "🌯 كريب", items: [{n:"بطاطس", p:60}, {n:"تشيكن كلاسيك", p:100}, {n:"تشيكن رانش", p:110}, {n:"تشيكن باربيكيو", p:110}, {n:"تشيكن فاير", p:110}, {n:"تشيكن مكسيكي", p:110}, {n:"تشيكن شيش", p:110}, {n:"تشيكن مسحب", p:110}, {n:"برجر لحمة", p:100}, {n:"كفتة", p:100}, {n:"هوت دوج", p:90}] },
+            { cat: "🍔 ساندوتشات", items: [{n:"تشيكن كلاسيك", p:90}, {n:"تشيكن رانش", p:100}, {n:"تشيكن باربيكيو", p:100}, {n:"تشيكن فاير", p:100}, {n:"تشيكن مكسيكي", p:100}, {n:"تشيكن شيش", p:100}, {n:"تشيكن مسحب", p:100}, {n:"برجر لحمة", p:90}, {n:"كفتة", p:90}, {n:"هوت دوج", p:80}] },
+            { cat: "🌮 تورتيلا", items: [{n:"تورتيلا بطاطس", p:50}, {n:"تورتيلا تشيكن", p:100}, {n:"تورتيلا مسحب", p:100}, {n:"تورتيلا شيش", p:100}, {n:"تورتيلا كفتة", p:100}] },
+            { cat: "🍝 باستا", items: [{n:"وايت صوص", p:50}, {n:"ريد صوص", p:50}, {n:"ماك أند تشيز", p:55}, {n:"ماك رينو", p:85}, {n:"ماك نابولي", p:85}, {n:"ماك ريحانو", p:85}, {n:"ماك شيتوس", p:60}, {n:"باشميل", p:90}, {n:"نجريسكو", p:90}] },
+            { cat: "🍽 وجبات", items: [{n:"وجبة استربس", p:125}, {n:"وجبة مسحب", p:125}, {n:"وجبة شيش", p:125}, {n:"وجبة كفته", p:125}, {n:"وجبة سجق", p:110}, {n:"وجبة فتة شاورمة", p:110}] },
+            { cat: "🥞 فطار وحلو", items: [{n:"جبنة خلطه", p:15}, {n:"جبنه رومي", p:20}, {n:"جبنه مكس", p:20}, {n:"بيتزا مكس", p:20}, {n:"بطاطس", p:15}, {n:"غنوج", p:15}, {n:"كب بطاطس", p:40}, {n:"كب اندومي", p:25}, {n:"مكس حلو", p:20}, {n:"وافل كلاسيك", p:40}, {n:"وافل شوكولاته", p:50}, {n:"وافل مكس", p:50}, {n:"سكلانس", p:60}] },
+            { cat: "☕ مشروبات ساخنه", items: [{n:"قهوة تركي", p:20}, {n:"قهوة فرنساوي", p:35}, {n:"قهوة فليفر", p:35}, {n:"اسبريسو سنجل", p:25}, {n:"اسبريسو دبل", p:35}, {n:"مكياتو", p:40}, {n:"لاتيه", p:45}, {n:"كابتشينو كلاسيك", p:40}, {n:"كابتشينو فليفر", p:45}, {n:"نسكافيه كلاسيك", p:30}, {n:"نسكافيه ميلك", p:45}, {n:"نسكافيه فليفر", p:45}, {n:"شاي", p:10}, {n:"شاي كرك", p:15}, {n:"ابل سيدار", p:35}, {n:"هامر هيد", p:45}, {n:"هوت بوريو", p:50}, {n:"هوت شوكليت", p:50}] },
+            { cat: "🥤 مشروبات بارده", items: [{n:"كانز", p:25}, {n:"تويست", p:25}, {n:"ايس نسكافيه", p:45}, {n:"ريد بول", p:65}, {n:"ايس كوفي", p:55}, {n:"ايس موكا", p:55}, {n:"ميلك تشيك", p:55}, {n:"ايس بوريو", p:55}, {n:"ايس شوكليت", p:55}, {n:"ليمون", p:30}, {n:"ليمون نعناع", p:35}, {n:"مانجو", p:40}, {n:"موز حليب", p:40}, {n:"فراوله", p:40}, {n:"جوافه", p:40}, {n:"موهيتو", p:50}, {n: "مياه صغيره", p: 10}] }
+        ];
+
+        let cart = {};
+
+        function renderMenu() {
+            const container = document.getElementById('menu-content');
+            let html = '';
+            menuData.forEach(section => {
+                html += `<div class="menu-section"><h2 class="section-name">${section.cat}</h2>`;
+                section.items.forEach(item => {
+                    html += `<div class="food-item">
+                                <div class="flex flex-col"><span class="font-bold">${item.n}</span><span class="text-[#ff8c00] text-xs font-black">${item.p} جنيه</span></div>
+                                <div class="flex items-center gap-3">
+                                    <button onclick="updateQty('${item.n}', ${item.p}, -1)" class="qty-btn">-</button>
+                                    <span id="qty-${item.n}" class="font-black text-[#ff8c00]">0</span>
+                                    <button onclick="updateQty('${item.n}', ${item.p}, 1)" class="qty-btn" style="background:#ff8c00;color:#000">+</button>
+                                </div>
+                             </div>`;
+                });
+                html += `</div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function updateQty(name, price, delta) {
+            if (!cart[name]) cart[name] = { p: price, q: 0 };
+            cart[name].q += delta;
+            if (cart[name].q <= 0) { cart[name].q = 0; delete cart[name]; }
+            const el = document.getElementById(`qty-${name}`);
+            if(el) el.innerText = cart[name] ? cart[name].q : 0;
+            let total = 0; let count = 0;
+            for (let k in cart) { total += cart[k].p * cart[k].q; count += cart[k].q; }
+            document.getElementById('total-price').innerText = total + " جنيه";
+            document.getElementById('cart-bar').style.display = count > 0 ? 'block' : 'none';
+        }
+
+        function sendOrder() {
+            const addr = document.getElementById('user-address').value;
+            if (!addr) return alert("اكتب العنوان يا برنس!");
+            let msg = "طلب جديد - All In Cup 🍔\n";
+            for (let k in cart) { if(cart[k].q > 0) msg += `• ${k} (${cart[k].q}) = ${cart[k].p * cart[k].q}ج\n`; }
+            msg += `\n💰 الإجمالي: ${document.getElementById('total-price').innerText}\n📍 العنوان: ${addr}\n💵 الدفع: كاش عند الاستلام`;
+            window.open(`https://wa.me/201210009806?text=${encodeURIComponent(msg)}`);
+        }
+
+        window.onload = renderMenu;
+    </script>
+</body>
+</html>
