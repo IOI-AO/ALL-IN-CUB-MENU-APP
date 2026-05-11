@@ -7,31 +7,40 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #f4f6f8; color: #000; margin: 0; padding: 0; scroll-behavior: smooth; }
-        .main-header { background: linear-gradient(180deg, #ff8c00 0%, #f4f6f8 100%); padding: 60px 20px; text-align: center; }
+        body { font-family: 'Cairo', sans-serif; background-color: #f4f6f8; color: #000; margin: 0; padding: 0; scroll-behavior: smooth; position: relative; z-index: 0; }
         
-        .logo-container { 
-            width: 140px; height: 140px; background: #fff; border-radius: 50%; 
-            margin: 0 auto; display: flex; justify-content: center; align-items: center; 
-            border: 5px solid #fff; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+        /* خلفية الإيموجيات الباهتة */
+        body::before {
+            content: "🍔 🍕 🌯 🍟 🍗 🌮 🥤 🥞 🌭 ☕ 🍔 🍕 🌯 🍟 🍗 🌮 🥤 🥞 🌭 ☕ 🍔 🍕 🌯 🍟 🍗 🌮 🥤 🥞 🌭 ☕ 🍔 🍕 🌯 🍟 🍗 🌮 🥤 🥞 🌭 ☕";
+            position: fixed; top: -50px; left: -50px; right: -50px; bottom: -50px;
+            font-size: 60px; line-height: 2; letter-spacing: 20px;
+            opacity: 0.04; z-index: -1; display: flex; flex-wrap: wrap;
+            justify-content: center; align-content: center; pointer-events: none;
+            transform: rotate(-15deg) scale(1.5);
         }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .main-header { background: linear-gradient(180deg, #ff8c00 0%, #f4f6f8 100%); padding: 60px 20px 20px; text-align: center; }
+        .logo-container { width: 140px; height: 140px; background: #fff; border-radius: 50%; margin: 0 auto; display: flex; justify-content: center; align-items: center; border: 5px solid #fff; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); overflow: hidden; }
         
         .menu-section { background: #fff; margin: 15px; padding: 15px; border-radius: 15px; border-right: 6px solid #ff8c00; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
         .section-name { color: #ff8c00; font-size: 1.6rem; font-weight: 900; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
         .item-card { padding: 15px 0; border-bottom: 1px solid #eee; }
+        .item-card:last-child { border-bottom: none; }
         .price-tag { color: #ff8c00; font-weight: 900; font-size: 1.2rem; }
-        .qty-btn { background: #ff8c00; color: #000; width: 35px; height: 35px; border-radius: 10px; font-weight: 900; display: flex; justify-content: center; align-items: center; }
-        
+        .qty-btn { background: #ff8c00; color: #000; width: 35px; height: 35px; border-radius: 10px; font-weight: 900; display: flex; justify-content: center; align-items: center; cursor: pointer; border: none; }
+        .qty-btn:active { transform: scale(0.9); }
         .item-note-input { width: 100%; background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; padding: 8px; margin-top: 10px; font-size: 0.85rem; color: #333; display: none; }
-        
-        .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #ff8c00; color: #000; padding: 15px 18px; display: flex; flex-direction: column; font-weight: 900; border-radius: 25px 25px 0 0; z-index: 100; transform: translateY(100%); transition: 0.4s; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); cursor: pointer; }
+
+        .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #ff8c00; color: #000; padding: 15px 18px; display: flex; flex-direction: column; font-weight: 900; border-radius: 25px 25px 0 0; z-index: 100; transform: translateY(150%); transition: 0.4s; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); cursor: pointer; }
         .cart-bar.active { transform: translateY(0); }
         .cart-bar-header { display: flex; justify-content: space-between; align-items: center; width: 100%; }
         .cart-quick-summary { width: 100%; font-size: 0.9rem; font-weight: 700; color: #222; margin-bottom: 8px; text-align: right; display: none; border-bottom: 1px solid rgba(0,0,0,0.2); padding-bottom: 8px; white-space: nowrap; overflow-x: auto; scrollbar-width: none; }
         .cart-quick-summary::-webkit-scrollbar { display: none; }
-        
-        #cartPage { position: fixed; inset: 0; background: #f4f6f8; z-index: 200; display: none; flex-direction: column; padding: 20px; }
+
+        #cartPage { position: fixed; inset: 0; background: #f4f6f8; z-index: 200; display: none; flex-direction: column; padding: 20px; overflow-y: auto; }
         .input-field { width: 100%; background: #fff; border: 1px solid #ccc; padding: 12px; border-radius: 10px; color: #000; margin-bottom: 15px; text-align: right; }
         .qr-white-bg { background: white; padding: 12px; border-radius: 20px; display: inline-block; transition: 0.3s; border: 1px solid #eee; }
     </style>
@@ -46,7 +55,20 @@
         <p class="font-bold text-black bg-white/90 inline-block px-5 py-1 rounded-full mt-3 text-sm shadow-sm">📍 واحة بدر - داخل جامعة بدر</p>
     </div>
 
-    <div class="max-w-2xl mx-auto pb-40" id="menu-container"></div>
+    <div class="sticky top-0 z-40 bg-[#f4f6f8]/95 backdrop-blur-md shadow-sm border-b border-gray-200 pb-2 pt-3 px-4">
+        <input type="text" id="searchInput" onkeyup="searchMenuApp()" placeholder="🔍 ابحث عن أكلتك (مثال: شيش)..." class="w-full bg-white border-2 border-gray-200 rounded-xl p-3 text-black font-bold outline-none focus:border-[#ff8c00] shadow-sm mb-3">
+        <div class="flex overflow-x-auto gap-2 no-scrollbar" id="quickNav"></div>
+    </div>
+
+    <div class="max-w-2xl mx-auto pb-40">
+        
+        <div class="mt-5 mb-2" id="newItemsSection">
+            <h2 class="text-2xl font-black text-[#ff8c00] px-5 flex items-center gap-2 mb-3">🔥 جديدنا</h2>
+            <div class="flex overflow-x-auto gap-4 px-4 pb-4 no-scrollbar" id="newItemsSlider"></div>
+        </div>
+
+        <div id="menu-container"></div>
+    </div>
 
     <div id="cartBar" class="cart-bar" onclick="toggleCartPage(true)">
         <div id="quickSummary" class="cart-quick-summary"></div>
@@ -65,7 +87,7 @@
         <div class="bg-white shadow-sm p-4 rounded-2xl mb-6">
             <input type="text" id="userName" class="input-field" placeholder="الاسم بالكامل">
             <input type="tel" id="userPhone" class="input-field" placeholder="رقم الموبايل (11 رقم)">
-            <div class="text-[#ff8c00] font-bold text-center">📍 استلام من الفرع</div>
+            <div class="text-[#ff8c00] font-bold text-center border-t pt-3 mt-2">📍 استلام من الفرع</div>
         </div>
         <div class="flex justify-between items-center p-4 bg-[#ff8c00] text-black rounded-xl mb-4 font-black text-xl shadow-md">
             <span>الإجمالي:</span><span id="finalTotal">0 ج.م</span>
@@ -85,10 +107,13 @@
     <script>
         const menuData = [
             { name: "🌯 كريب", image: "https://images.unsplash.com/photo-1519676867240-f03562e64548?auto=format&fit=crop&w=500&q=80", items: [
-                { id: 1, name: "كريب بطاطس", price: 70 }, { id: 2, name: "تشيكن كلاسيك", price: 110 }, { id: 3, name: "تشيكن رانش", price: 120 }, { id: 4, name: "تشيكن باربيكيو", price: 120 }, { id: 5, name: "تشيكن فاير", price: 120 }, { id: 6, name: "تشيكن مكسيكي", price: 120 }, { id: 7, name: "تشيكن شيش", price: 120 }, { id: 8, name: "تشيكن مسحب", price: 120 }, { id: 9, name: "برجر لحمة", price: 110 }, { id: 10, name: "هوت دوج", price: 100 }
+                { id: 101, name: "كريب مكس صاروخ", price: 150, desc: "استربس و بانيه و هوت دوج" },
+                { id: 100, name: "كريب شيش طاووق", price: 120 },
+                { id: 1, name: "كريب بطاطس", price: 70 }, { id: 2, name: "تشيكن كلاسيك", price: 110 }, { id: 3, name: "تشيكن رانش", price: 120 }, { id: 4, name: "تشيكن باربيكيو", price: 120 }, { id: 5, name: "تشيكن فاير", price: 120 }, { id: 6, name: "تشيكن مكسيكي", price: 120 }, { id: 7, name: "تشيكن شيش", price: 120 }, { id: 8, name: "تشيكن مسحب", price: 120 }, { id: 9, name: "برجر لحمة", price: 110 }, { id: 10, name: "كريب هوت دوج", price: 100 }
             ]},
+
             { name: "🌮 سوري", image: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=500&q=80", items: [
-                { id: 11, name: "بطاطس سوري صغير", price: 35 },{ id: 110, name: "بطاطس سوري", price: 60 }, { id: 12, name: "تشيكن سوري", price: 110 }, { id: 13, name: "مسحب سوري", price: 110 }, { id: 14, name: "شيش سوري", price: 110 }
+                { id: 11, name: "بطاطس سوري صغير", price: 35 },{ id: 110, name: "بطاطس سوري", price: 60 }, { id: 12, name: "تشيكن سوري", price: 110 }, { id: 13, name: "مسحب سوري", price: 110 }, { id: 14, name: "شيش سوري", price: 110 }, { id: 102, name: "ساندوتش هوت دوج", price: 40 }
             ]},
             { name: "🍝 باستا", image: "https://images.unsplash.com/photo-1543339494-b4cd4f7ba686?auto=format&fit=crop&w=500&q=60", items: [{ id: 15, name: "ماك أند تشيز", price: 55 }, { id: 63, name: "ماك أند تشيز تشيكن", price: 85 }
             ]},
@@ -96,7 +121,7 @@
                 { id: 16, name: "وجبة استربس", price: 125 }, { id: 17, name: "وجبة مسحب", price: 125 }, { id: 18, name: "وجبة شيش", price: 125 }
             ]},
             { name: "🥞 فطار وحلو", image: "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=500&q=80", items: [
-                { id: 19, name: "جبنة خلطه", price: 20 }, { id: 20, name: "جبنه رومي", price: 25 }, { id: 21, name: "جبنه مكس", price: 25 }, { id: 22, name: "بطاطس ", price: 20 }, { id: 23, name: "كب بطاطس", price: 45 }, { id: 24, name: "كب اندومي", price: 30 }, { id: 25, name: "وافل كلاسيك", price: 65 }, { id: 28, name: "سكلانس", price: 95 }
+                { id: 19, name: "جبنة خلطه", price: 20 }, { id: 20, name: "جبنه رومي", price: 25 }, { id: 21, name: "جبنه مكس", price: 25 }, { id: 22, name: "بطاطس", price: 20 }, { id: 23, name: "كب بطاطس", price: 45 }, { id: 24, name: "كب اندومي", price: 30 }, { id: 25, name: "وافل كلاسيك", price: 65 }, { id: 28, name: "سكلانس", price: 95 }
             ]},
             { name: "☕ مشروبات ساخنة", image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=500&auto=format&fit=crop", items: [
                 { id: 29, name: "قهوة تركي", price: 25 }, { id: 30, name: "قهوة فرنساوي", price: 40 }, { id: 31, name: "قهوة فليفر", price: 40 }, { id: 32, name: "اسبريسو سنجل", price: 30 }, { id: 33, name: "اسبريسو دبل", price: 40 }, { id: 34, name: "مكياتو", price: 45 }, { id: 35, name: "لاتيه", price: 50 }, { id: 36, name: "كابتشينو كلاسيك", price: 45 }, { id: 37, name: "كابتشينو فليفر", price: 50 }, { id: 38, name: "نسكافيه كلاسيك", price: 35 }, { id: 39, name: "نسكافيه ميلك", price: 50 }, { id: 40, name: "نسكافيه فليفر", price: 50 }, { id: 41, name: "شاي", price: 10 }, { id: 42, name: "شاي كرك", price: 20 }, { id: 43, name: "ابل سيدار", price: 40 }, { id: 44, name: "هامر هيد", price: 50 }, { id: 45, name: "هوت بوريو", price: 55 }, { id: 46, name: "هوت شوكليت", price: 55 }
@@ -106,54 +131,94 @@
             ]}
         ];
 
+        const newItemsIDs = [101, 102, 100, 10]; // أصناف شريط الجديد
         let cart = {};
 
-        function renderMenu() {
+        function getItemById(id) {
+            for(let s of menuData) { let i = s.items.find(x => x.id === id); if(i) return i; }
+            return null;
+        }
+
+        function renderUI() {
+            // شريط المهام
+            const nav = document.getElementById('quickNav');
+            nav.innerHTML = menuData.map((s, i) => `<a href="#section-${i}" class="whitespace-nowrap bg-white px-5 py-2 rounded-full font-bold text-sm text-[#ff8c00] border-2 border-[#ff8c00] hover:bg-[#ff8c00] hover:text-white transition-colors shadow-sm">${s.name.split(' ')[1] || s.name}</a>`).join('');
+
+            // شريط الجديد
+            const slider = document.getElementById('newItemsSlider');
+            slider.innerHTML = newItemsIDs.map(id => {
+                let item = getItemById(id);
+                return item ? `<div class="min-w-[220px] bg-white p-4 rounded-xl border-2 border-[#ff8c00] shadow-sm flex flex-col justify-between"><div><h3 class="font-bold text-lg text-gray-800">${item.name}</h3>${item.desc ? `<p class="text-xs text-gray-500 mt-1 font-bold">${item.desc}</p>` : ''}</div><div class="mt-4 flex justify-between items-center"><span class="price-tag">${item.price} ج</span><div class="flex items-center gap-3"><button onclick="updateQty(${item.id}, -1)" class="qty-btn">-</button><span class="font-black w-6 text-center text-black qty-${item.id}">0</span><button onclick="updateQty(${item.id}, 1)" class="qty-btn">+</button></div></div></div>` : '';
+            }).join('');
+
+            // المنيو الأساسي
             const container = document.getElementById('menu-container');
-            menuData.forEach(section => {
-                let html = `<div class="menu-section">
-                                <img src="${section.image}" alt="${section.name}" class="w-full h-36 object-cover rounded-xl mb-4 shadow-sm">
-                                <h2 class="section-name">${section.name}</h2>`;
-                section.items.forEach(item => {
-                    html += `<div class="item-card"><div class="flex justify-between items-center"><div><h3 class="font-bold text-black">${item.name}</h3><span class="price-tag">${item.price} ج.م</span></div><div class="flex items-center gap-3"><button onclick="updateQty(${item.id}, -1)" class="qty-btn">-</button><span id="qty-${item.id}" class="font-black w-6 text-center text-black">0</span><button onclick="updateQty(${item.id}, 1)" class="qty-btn">+</button></div></div><input type="text" id="note-${item.id}" class="item-note-input" placeholder="ملاحظة خاصة بالطلب..." oninput="saveNote(${item.id})"></div>`;
+            container.innerHTML = menuData.map((section, index) => `
+                <div class="menu-section" id="section-${index}">
+                    <img src="${section.image}" alt="${section.name}" class="w-full h-36 object-cover rounded-xl mb-4 shadow-sm">
+                    <h2 class="section-name">${section.name}</h2>
+                    ${section.items.map(item => `
+                        <div class="item-card search-target">
+                            <div class="flex justify-between items-center">
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-black item-title">${item.name}</h3>
+                                    ${item.desc ? `<p class="text-xs text-gray-500 mt-1 font-bold">${item.desc}</p>` : ''}
+                                    <span class="price-tag block mt-1">${item.price} ج.م</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <button onclick="updateQty(${item.id}, -1)" class="qty-btn">-</button>
+                                    <span class="font-black w-6 text-center text-black qty-${item.id}">0</span>
+                                    <button onclick="updateQty(${item.id}, 1)" class="qty-btn">+</button>
+                                </div>
+                            </div>
+                            <input type="text" id="note-${item.id}" class="item-note-input" placeholder="ملاحظة خاصة بالطلب..." oninput="saveNote(${item.id})">
+                        </div>
+                    `).join('')}
+                </div>`).join('');
+        }
+
+        function searchMenuApp() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            document.getElementById('newItemsSection').style.display = input ? 'none' : 'block';
+            
+            document.querySelectorAll('.menu-section').forEach(section => {
+                let hasVisible = false;
+                section.querySelectorAll('.search-target').forEach(item => {
+                    let title = item.querySelector('.item-title').innerText.toLowerCase();
+                    if(title.includes(input)) { item.style.display = 'block'; hasVisible = true; } 
+                    else { item.style.display = 'none'; }
                 });
-                container.innerHTML += html + `</div>`;
+                section.style.display = hasVisible ? 'block' : 'none';
             });
         }
 
         function updateQty(id, change) {
-            let item = null; menuData.forEach(s => s.items.forEach(i => { if(i.id === id) item = i; }));
+            let item = getItemById(id);
             if(!cart[id]) cart[id] = { ...item, qty: 0, note: "" };
             cart[id].qty = Math.max(0, cart[id].qty + change);
-            document.getElementById(`note-${id}`).style.display = cart[id].qty > 0 ? "block" : "none";
-            document.getElementById(`qty-${id}`).innerText = cart[id].qty;
+            
+            document.querySelectorAll(`.qty-${id}`).forEach(el => el.innerText = cart[id].qty);
+            let noteInput = document.getElementById(`note-${id}`);
+            if(noteInput) noteInput.style.display = cart[id].qty > 0 ? "block" : "none";
+            
             updateCartBar();
         }
 
-        function saveNote(id) { cart[id].note = document.getElementById(`note-${id}`).value; }
+        function saveNote(id) { if(cart[id]) cart[id].note = document.getElementById(`note-${id}`).value; }
 
         function updateCartBar() {
-            let total = 0, count = 0; 
-            let summaryTextArray = []; 
-            
+            let total = 0, count = 0, summary = []; 
             Object.values(cart).forEach(i => { 
-                total += (i.price * i.qty); 
-                count += i.qty; 
-                if(i.qty > 0) {
-                    summaryTextArray.push(`${i.name} (${i.qty})`); 
-                }
+                total += (i.price * i.qty); count += i.qty; 
+                if(i.qty > 0) summary.push(`${i.name} (${i.qty})`); 
             });
-            
+
             document.getElementById('cartTotalDisplay').innerText = total + " ج.م";
             document.getElementById('cartBar').classList.toggle('active', count > 0);
-            
-            const quickSummaryDiv = document.getElementById('quickSummary');
-            if(count > 0) {
-                quickSummaryDiv.innerText = "الطلبات: " + summaryTextArray.join(' ، ');
-                quickSummaryDiv.style.display = "block";
-            } else {
-                quickSummaryDiv.style.display = "none";
-            }
+
+            const qs = document.getElementById('quickSummary');
+            if(count > 0) { qs.innerText = "الطلبات: " + summary.join(' ، '); qs.style.display = "block"; } 
+            else { qs.style.display = "none"; toggleCartPage(false); }
         }
 
         function toggleCartPage(show) {
@@ -173,30 +238,18 @@
         function sendToWhatsApp() {
             const name = document.getElementById('userName').value.trim();
             const phone = document.getElementById('userPhone').value.trim();
-
-            const phoneRegex = /^(010|011|012|015)[0-9]{8}$/;
-
             if(!name) { alert("من فضلك اكتب اسمك"); return; }
-            if(!phoneRegex.test(phone)) { 
-                alert("من فضلك اكتب رقم موبايل مصري صحيح (11 رقم)"); 
-                return; 
-            }
+            if(!/^(010|011|012|015)[0-9]{8}$/.test(phone)) { alert("برجاء إدخال رقم موبايل صحيح (11 رقم)"); return; }
 
             let msg = `طلب جديد من All In Cup\n\nالاسم: ${name}\nالموبايل: ${phone}\nالاستلام: من الفرع\n\nالطلبات:\n`, total = 0;
-            
             Object.values(cart).forEach(i => { 
-                if(i.qty > 0) { 
-                    msg += `${i.name} (العدد ${i.qty}) السعر ${i.price * i.qty}ج\n`;
-                    if(i.note) msg += `ملاحظة: ${i.note}\n`;
-                    msg += `\n`;
-                    total += (i.price * i.qty); 
-                }
+                if(i.qty > 0) { msg += `${i.name} (العدد ${i.qty}) السعر ${i.price * i.qty}ج\n${i.note ? `ملاحظة: ${i.note}\n` : ''}\n`; total += (i.price * i.qty); }
             });
-            
             msg += `الإجمالي: ${total} ج.م`;
             window.open(`https://wa.me/201210009806?text=${encodeURIComponent(msg)}`, '_blank');
         }
-        renderMenu();
+
+        window.onload = renderUI;
     </script>
 </body>
 </html>
