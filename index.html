@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Cairo', sans-serif; background-color: #f4f6f8; color: #000; margin: 0; padding: 0; scroll-behavior: smooth; position: relative; z-index: 0; }
-        
+
         /* خلفية الإيموجيات الباهتة */
         body::before {
             content: "🍔 🍕 🌯 🍟 🍗 🌮 🥤 🥞 🌭 ☕ 🍔 🍕 🌯 🍟 🍗 🌮 🥤 🥞 🌭 ☕ 🍔 🍕 🌯 🍟 🍗 🌮 🥤 🥞 🌭 ☕ 🍔 🍕 🌯 🍟 🍗 🌮 🥤 🥞 🌭 ☕";
@@ -24,8 +24,8 @@
 
         .main-header { background: linear-gradient(180deg, #ff8c00 0%, #f4f6f8 100%); padding: 60px 20px 20px; text-align: center; }
         .logo-container { width: 140px; height: 140px; background: #fff; border-radius: 50%; margin: 0 auto; display: flex; justify-content: center; align-items: center; border: 5px solid #fff; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); overflow: hidden; }
-        
-        .menu-section { background: #fff; margin: 15px; padding: 15px; border-radius: 15px; border-right: 6px solid #ff8c00; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+
+        .menu-section { background: #fff; margin: 15px; padding: 15px; border-radius: 15px; border-right: 6px solid #ff8c00; box-shadow: 0 4px 12px rgba(0,0,0,0.04); scroll-margin-top: 140px; }
         .section-name { color: #ff8c00; font-size: 1.6rem; font-weight: 900; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
         .item-card { padding: 15px 0; border-bottom: 1px solid #eee; }
         .item-card:last-child { border-bottom: none; }
@@ -57,13 +57,20 @@
 
     <div class="sticky top-0 z-40 bg-[#f4f6f8]/95 backdrop-blur-md shadow-sm border-b border-gray-200 pb-2 pt-3 px-4">
         <input type="text" id="searchInput" onkeyup="searchMenuApp()" placeholder="🔍 ابحث عن أكلتك (مثال: شيش)..." class="w-full bg-white border-2 border-gray-200 rounded-xl p-3 text-black font-bold outline-none focus:border-[#ff8c00] shadow-sm mb-3">
-        <div class="flex overflow-x-auto gap-2 no-scrollbar" id="quickNav"></div>
+        <div class="flex overflow-x-auto gap-2 no-scrollbar scroll-smooth" id="quickNav"></div>
     </div>
 
     <div class="max-w-2xl mx-auto pb-40">
-        
+
+        <!-- قسم العروض -->
+        <div class="mt-5 mb-2" id="offersSection">
+            <h2 class="text-2xl font-black text-[#ff8c00] px-5 flex items-center gap-2 mb-3">🎁 العروض</h2>
+            <div class="flex overflow-x-auto gap-4 px-4 pb-4 no-scrollbar" id="offersSlider"></div>
+        </div>
+
+        <!-- قسم الأصناف الجديدة -->
         <div class="mt-5 mb-2" id="newItemsSection">
-            <h2 class="text-2xl font-black text-[#ff8c00] px-5 flex items-center gap-2 mb-3">🔥 جديدنا</h2>
+            <h2 class="text-2xl font-black text-[#ff8c00] px-5 flex items-center gap-2 mb-3">✨ الأصناف الجديدة</h2>
             <div class="flex overflow-x-auto gap-4 px-4 pb-4 no-scrollbar" id="newItemsSlider"></div>
         </div>
 
@@ -106,12 +113,17 @@
 
     <script>
         const menuData = [
+            { name: "🎁 العروض", image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=500&q=80", items: [
+                { id: 201, name: "عرض 2 سوري كبير", price: 100, desc: "2 سوري كبير" },
+                { id: 202, name: "عرض 2 كريب باربكيو", price: 240, desc: "2 كريب باربكيو عليهم كب بطاطس هدية" },
+                { id: 203, name: "عرض 2 كريب الصاروخ", price: 300, desc: "2 كريب الصاروخ عليهم كب بطاطس هدية" },
+                { id: 204, name: "عرض 2 ساندوتش هوت دوج", price: 70, desc: "2 ساندوتش هوت دوج" }
+            ]},
             { name: "🌯 كريب", image: "https://images.unsplash.com/photo-1519676867240-f03562e64548?auto=format&fit=crop&w=500&q=80", items: [
                 { id: 101, name: "كريب مكس صاروخ", price: 150, desc: "استربس و بانيه و هوت دوج" },
                 { id: 100, name: "كريب شيش طاووق", price: 120 },
                 { id: 1, name: "كريب بطاطس", price: 70 }, { id: 2, name: "تشيكن كلاسيك", price: 110 }, { id: 3, name: "تشيكن رانش", price: 120 }, { id: 4, name: "تشيكن باربيكيو", price: 120 }, { id: 5, name: "تشيكن فاير", price: 120 }, { id: 6, name: "تشيكن مكسيكي", price: 120 }, { id: 7, name: "تشيكن شيش", price: 120 }, { id: 8, name: "تشيكن مسحب", price: 120 }, { id: 9, name: "برجر لحمة", price: 110 }, { id: 10, name: "كريب هوت دوج", price: 100 }
             ]},
-
             { name: "🌮 سوري", image: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=500&q=80", items: [
                 { id: 11, name: "بطاطس سوري صغير", price: 35 },{ id: 110, name: "بطاطس سوري", price: 60 }, { id: 12, name: "تشيكن سوري", price: 110 }, { id: 13, name: "مسحب سوري", price: 110 }, { id: 14, name: "شيش سوري", price: 110 }, { id: 102, name: "ساندوتش هوت دوج", price: 40 }
             ]},
@@ -131,7 +143,8 @@
             ]}
         ];
 
-        const newItemsIDs = [101, 102, 100, 10]; // أصناف شريط الجديد
+        const offersIDs = [201, 202, 203, 204];
+        const newItemsIDs = [101, 102, 100, 10]; 
         let cart = {};
 
         function getItemById(id) {
@@ -140,18 +153,22 @@
         }
 
         function renderUI() {
-            // شريط المهام
+            // شريط المهام بأزرار قابلة للتغيير برمجياً
             const nav = document.getElementById('quickNav');
-            nav.innerHTML = menuData.map((s, i) => `<a href="#section-${i}" class="whitespace-nowrap bg-white px-5 py-2 rounded-full font-bold text-sm text-[#ff8c00] border-2 border-[#ff8c00] hover:bg-[#ff8c00] hover:text-white transition-colors shadow-sm">${s.name.split(' ')[1] || s.name}</a>`).join('');
+            nav.innerHTML = menuData.map((s, i) => `<a href="#section-${i}" id="nav-link-${i}" class="nav-link whitespace-nowrap bg-white text-[#ff8c00] px-5 py-2 rounded-full font-bold text-sm border-2 border-[#ff8c00] transition-colors shadow-sm">${s.name.split(' ')[1] || s.name}</a>`).join('');
 
-            // شريط الجديد
+            const offersSlider = document.getElementById('offersSlider');
+            offersSlider.innerHTML = offersIDs.map(id => {
+                let item = getItemById(id);
+                return item ? `<div class="min-w-[260px] bg-white p-4 rounded-xl border-2 border-[#ff8c00] shadow-sm flex flex-col justify-between"><div><h3 class="font-bold text-lg text-gray-800">${item.name}</h3>${item.desc ? `<p class="text-xs text-gray-500 mt-1 font-bold">${item.desc}</p>` : ''}</div><div class="mt-4 flex justify-between items-center"><span class="price-tag">${item.price} ج</span><div class="flex items-center gap-3"><button onclick="updateQty(${item.id}, -1)" class="qty-btn">-</button><span class="font-black w-6 text-center text-black qty-${item.id}">0</span><button onclick="updateQty(${item.id}, 1)" class="qty-btn">+</button></div></div></div>` : '';
+            }).join('');
+
             const slider = document.getElementById('newItemsSlider');
             slider.innerHTML = newItemsIDs.map(id => {
                 let item = getItemById(id);
                 return item ? `<div class="min-w-[220px] bg-white p-4 rounded-xl border-2 border-[#ff8c00] shadow-sm flex flex-col justify-between"><div><h3 class="font-bold text-lg text-gray-800">${item.name}</h3>${item.desc ? `<p class="text-xs text-gray-500 mt-1 font-bold">${item.desc}</p>` : ''}</div><div class="mt-4 flex justify-between items-center"><span class="price-tag">${item.price} ج</span><div class="flex items-center gap-3"><button onclick="updateQty(${item.id}, -1)" class="qty-btn">-</button><span class="font-black w-6 text-center text-black qty-${item.id}">0</span><button onclick="updateQty(${item.id}, 1)" class="qty-btn">+</button></div></div></div>` : '';
             }).join('');
 
-            // المنيو الأساسي
             const container = document.getElementById('menu-container');
             container.innerHTML = menuData.map((section, index) => `
                 <div class="menu-section" id="section-${index}">
@@ -160,9 +177,9 @@
                     ${section.items.map(item => `
                         <div class="item-card search-target">
                             <div class="flex justify-between items-center">
-                                <div class="flex-1">
+                                <div class="flex-1 pr-2">
                                     <h3 class="font-bold text-black item-title">${item.name}</h3>
-                                    ${item.desc ? `<p class="text-xs text-gray-500 mt-1 font-bold">${item.desc}</p>` : ''}
+                                    ${item.desc ? `<p class="text-xs text-gray-500 mt-1 font-bold leading-5">${item.desc}</p>` : ''}
                                     <span class="price-tag block mt-1">${item.price} ج.م</span>
                                 </div>
                                 <div class="flex items-center gap-3">
@@ -175,12 +192,53 @@
                         </div>
                     `).join('')}
                 </div>`).join('');
+                
+            setupScrollSpy(); // تفعيل المراقب بعد رسم المنيو
+        }
+
+        // دالة مراقبة التمرير لتفعيل الزر الخاص بالقسم
+        function setupScrollSpy() {
+            const sections = document.querySelectorAll('.menu-section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '-120px 0px -60% 0px', 
+                threshold: 0
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.id;
+                        const activeIndex = id.split('-')[1];
+
+                        // مسح الحالة النشطة من كل الأزرار
+                        navLinks.forEach(link => {
+                            link.classList.remove('bg-[#ff8c00]', 'text-white');
+                            link.classList.add('bg-white', 'text-[#ff8c00]');
+                        });
+
+                        // إضافة الحالة النشطة للزر الموازي للقسم المفتوح
+                        const activeLink = document.getElementById(`nav-link-${activeIndex}`);
+                        if (activeLink) {
+                            activeLink.classList.remove('bg-white', 'text-[#ff8c00]');
+                            activeLink.classList.add('bg-[#ff8c00]', 'text-white');
+                            // التمرير لشريط التنقل ليبقى الزر ظاهراً
+                            activeLink.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => observer.observe(section));
         }
 
         function searchMenuApp() {
             let input = document.getElementById('searchInput').value.toLowerCase();
             document.getElementById('newItemsSection').style.display = input ? 'none' : 'block';
-            
+            document.getElementById('offersSection').style.display = input ? 'none' : 'block';
+
             document.querySelectorAll('.menu-section').forEach(section => {
                 let hasVisible = false;
                 section.querySelectorAll('.search-target').forEach(item => {
@@ -196,11 +254,11 @@
             let item = getItemById(id);
             if(!cart[id]) cart[id] = { ...item, qty: 0, note: "" };
             cart[id].qty = Math.max(0, cart[id].qty + change);
-            
+
             document.querySelectorAll(`.qty-${id}`).forEach(el => el.innerText = cart[id].qty);
             let noteInput = document.getElementById(`note-${id}`);
             if(noteInput) noteInput.style.display = cart[id].qty > 0 ? "block" : "none";
-            
+
             updateCartBar();
         }
 
