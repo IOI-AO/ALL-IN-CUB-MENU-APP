@@ -117,7 +117,8 @@
                 { id: 201, name: "عرض 2 سوري كبير", price: 100, desc: "2 سوري كبير" },
                 { id: 202, name: "عرض 2 كريب باربكيو", price: 240, desc: "2 كريب باربكيو عليهم كب بطاطس هدية" },
                 { id: 203, name: "عرض 2 كريب الصاروخ", price: 300, desc: "2 كريب الصاروخ عليهم كب بطاطس هدية" },
-                { id: 204, name: "عرض 2 ساندوتش هوت دوج", price: 70, desc: "2 ساندوتش هوت دوج" }
+                { id: 204, name: "عرض 2 ساندوتش هوت دوج", price: 100, desc: "2 ساندوتش هوت دوج معاه كب بطاطس" },
+                { id: 205, name: "عرض 2 ساندوتش استربس", price: 150, desc: "2 ساندوتش استربس معاهم كب بطاطس" }
             ]},
             { name: "🌯 كريب", image: "https://images.unsplash.com/photo-1519676867240-f03562e64548?auto=format&fit=crop&w=500&q=80", items: [
                 { id: 101, name: "كريب مكس صاروخ", price: 150, desc: "استربس و بانيه و هوت دوج" },
@@ -125,7 +126,7 @@
                 { id: 1, name: "كريب بطاطس", price: 70 }, { id: 2, name: "تشيكن كلاسيك", price: 110 }, { id: 3, name: "تشيكن رانش", price: 120 }, { id: 4, name: "تشيكن باربيكيو", price: 120 }, { id: 5, name: "تشيكن فاير", price: 120 }, { id: 6, name: "تشيكن مكسيكي", price: 120 }, { id: 7, name: "تشيكن شيش", price: 120 }, { id: 8, name: "تشيكن مسحب", price: 120 }, { id: 9, name: "برجر لحمة", price: 110 }, { id: 10, name: "كريب هوت دوج", price: 100 }
             ]},
             { name: "🌮 سوري", image: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=500&q=80", items: [
-                { id: 11, name: "بطاطس سوري صغير", price: 35 },{ id: 110, name: "بطاطس سوري", price: 60 }, { id: 12, name: "تشيكن سوري", price: 110 }, { id: 13, name: "مسحب سوري", price: 110 }, { id: 14, name: "شيش سوري", price: 110 }, { id: 102, name: "ساندوتش هوت دوج", price: 40 }
+                { id: 11, name: "بطاطس سوري صغير", price: 35 },{ id: 110, name: "بطاطس سوري", price: 60 }, { id: 12, name: "تشيكن سوري", price: 110 }, { id: 13, name: "مسحب سوري", price: 110 }, { id: 14, name: "شيش سوري", price: 110 }, { id: 102, name: "ساندوتش هوت دوج", price: 40 }, { id: 103, name: "ساندوتش استربس فينو", price: 70 }
             ]},
             { name: "🍝 باستا", image: "https://images.unsplash.com/photo-1543339494-b4cd4f7ba686?auto=format&fit=crop&w=500&q=60", items: [{ id: 15, name: "ماك أند تشيز", price: 55 }, { id: 63, name: "ماك أند تشيز تشيكن", price: 85 }
             ]},
@@ -143,8 +144,9 @@
             ]}
         ];
 
-        const offersIDs = [201, 202, 203, 204];
-        const newItemsIDs = [101, 102, 100, 10]; 
+        const offersIDs = [201, 202, 203, 204, 205];
+        // تم إضافة id الخاص بساندوتش استربس فينو (103) هنا
+        const newItemsIDs = [103, 101, 102, 100, 10]; 
         let cart = {};
 
         function getItemById(id) {
@@ -192,7 +194,7 @@
                         </div>
                     `).join('')}
                 </div>`).join('');
-                
+
             setupScrollSpy(); // تفعيل المراقب بعد رسم المنيو
         }
 
@@ -267,7 +269,7 @@
         function updateCartBar() {
             let total = 0, count = 0, summary = []; 
             Object.values(cart).forEach(i => { 
-                total += (i.price * i.qty); count += i.qty; 
+                                total += (i.price * i.qty); count += i.qty; 
                 if(i.qty > 0) summary.push(`${i.name} (${i.qty})`); 
             });
 
